@@ -12,6 +12,7 @@ import { AccountStatusEnum } from '../account/enums/account-status.enum';
 import { ITransferCreatedResponse } from './interfaces/transfer-response.interface';
 import { TransferResponseMapper } from './mappers/transfer-response.mapper';
 import { AccountEntity } from '../account/entities/account.entity';
+import { TransferStatusEnum } from './enum/transfer-status.enum';
 
 @Injectable()
 export class TransferService {
@@ -60,9 +61,10 @@ export class TransferService {
     amount: number
   ) {
     const transfer = this.transferRepository.create({
-      sourceAccount: sourceAccount,
-      destinationAccount: destinationAccount,
+      sourceAccount,
+      destinationAccount,
       amount,
+      status: TransferStatusEnum.COMPLETED,
     });
 
     await this.transferRepository.save(transfer);
