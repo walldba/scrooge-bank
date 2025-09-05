@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './config/database.config';
 import { YmlConfig } from './config/yml.config.loader';
 import { addTransactionalDataSource } from 'typeorm-transactional';
+import { BankModule } from './modules/bank/bank.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { addTransactionalDataSource } from 'typeorm-transactional';
       },
       useFactory: () => ({}),
     }),
+    BankModule,
   ],
 })
 export class AppModule {}

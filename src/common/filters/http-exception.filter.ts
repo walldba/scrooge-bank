@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { FastifyReply } from 'fastify';
 
 interface ErrorResponse {
   success: boolean;
@@ -20,7 +20,7 @@ interface ErrorResponse {
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse<FastifyReply>();
 
     let status: number;
     let errorCode: string;
@@ -35,8 +35,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message = errorResponse;
       } else if (typeof errorResponse === 'object' && errorResponse !== null) {
         const errorObj = errorResponse as any;
-        message =
-          errorObj.message || errorObj.error || 'Erro interno do servidor';
+        message = errorObj.message || errorObj.error || 'Internal server error';
         details =
           errorObj.details ||
           (Array.isArray(errorObj.message) ? errorObj.message : undefined);
@@ -69,7 +68,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       // Handle non-HTTP exceptions
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       errorCode = 'INTERNAL_SERVER_ERROR';
-      message = 'Erro interno do servidor';
+      message = 'Internal server error';
     }
 
     const errorResponse: ErrorResponse = {
@@ -81,8 +80,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       },
     };
 
-    console.log('Error Response:', exception); // Log the error response for debugging
+    //Suggestion: Use datadog or other service to log errors
+    console.log('Error Response:', exception);
 
-    response.status(status).json(errorResponse);
+    response.status(status).send(errorResponse);
   }
 }
