@@ -12,6 +12,8 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountStatusEnum } from './enums/account-status.enum';
 import { Transactional } from 'typeorm-transactional';
 import { FindOneOptions, UpdateResult } from 'typeorm';
+import { AccountResponseMappers } from './mappers/account-response.mapper';
+import { IAccountListResponse } from './interfaces/account-response.interface';
 
 @Injectable()
 export class AccountService {
@@ -22,8 +24,10 @@ export class AccountService {
     private readonly userService: UserService
   ) {}
 
-  async getAccounts(): Promise<AccountEntity[]> {
-    return this.accountRepository.find({ relations: ['user'] });
+  async getAccounts(): Promise<IAccountListResponse[]> {
+    const accounts = await this.accountRepository.find({ relations: ['user'] });
+
+    return accounts.map(AccountResponseMappers.mapAccountListResponse);
   }
 
   async getAccount(
@@ -38,15 +42,17 @@ export class AccountService {
   @Transactional()
   async validateAndCreate(
     createAccountDto: CreateAccountDto
-  ): Promise<AccountEntity> {
+  ): Promise<IAccountListResponse> {
     const user = await this.userService.findOneOrCreate(createAccountDto.user);
 
     await this.validateAccountCreation(user.id);
 
-    return this.createAccount(createAccountDto, user.id);
+    const account = await this.createAccount(createAccountDto, user.id);
+
+    return AccountResponseMappers.mapAccountListResponse(account);
   }
 
-  private async validateAccountCreation(userId: string) {
+  private async validateAccountCreation(userId: string): Promise<void> {
     const existingAccount = await this.accountRepository.findOneBy({
       user: { id: userId },
       status: AccountStatusEnum.OPEN,
@@ -59,7 +65,10 @@ export class AccountService {
     }
   }
 
-  private createAccount(createAccountDto: CreateAccountDto, userId: string) {
+  private createAccount(
+    createAccountDto: CreateAccountDto,
+    userId: string
+  ): Promise<AccountEntity> {
     const account = this.accountRepository.create({
       user: { id: userId },
       balance: 0,
