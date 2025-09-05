@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 
@@ -13,6 +13,6 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true, nullable: false })
   mail: string;
 
-  @OneToOne(() => AccountEntity, (account) => account.user)
-  account: AccountEntity;
+  @OneToMany(() => AccountEntity, (account) => account.user)
+  accounts: AccountEntity[];
 }
