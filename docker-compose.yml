@@ -1,0 +1,50 @@
+services:
+  api:
+    container_name: scrooge-bank-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=scrooge-bank
+      - NODE_ENV=development
+      - JWT_SECRET=your_jwt_secret
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    networks:
+      - scrooge-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: scrooge-postgres
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=scrooge-bank
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d scrooge-bank']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - scrooge-network
+
+networks:
+  scrooge-network:
+    driver: bridge
+
+volumes:
+  pg_data:
