@@ -40,6 +40,15 @@ export class AccountService {
     });
   }
 
+  async getAccountWithLock(
+    options: FindOneOptions<AccountEntity>
+  ): Promise<AccountEntity | null> {
+    return this.accountRepository.findOne({
+      lock: { mode: 'pessimistic_write' },
+      ...options,
+    });
+  }
+
   @Transactional()
   async validateAndCreate(
     createAccountDto: CreateAccountDto

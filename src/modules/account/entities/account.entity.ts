@@ -5,6 +5,7 @@ import { UserEntity } from '../../user/entities/user.entity';
 import { DepositEntity } from '../../deposit/entities/deposit.entity';
 import { WithdrawalEntity } from '../../withdrawal/entities/withdrawal.entity';
 import { LoanEntity } from '../../loan/entities/loan.entity';
+import { TransferEntity } from '../../transfer/entities/transfer.entity';
 
 @Entity('accounts')
 export class AccountEntity extends BaseEntity {
@@ -36,4 +37,10 @@ export class AccountEntity extends BaseEntity {
 
   @OneToMany(() => LoanEntity, (loan) => loan.account)
   loans: LoanEntity[];
+
+  @OneToMany(() => TransferEntity, (transfer) => transfer.sourceAccount)
+  sentTransfers: TransferEntity[];
+
+  @OneToMany(() => TransferEntity, (transfer) => transfer.destinationAccount)
+  receivedTransfers: TransferEntity[];
 }

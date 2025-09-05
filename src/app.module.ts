@@ -10,6 +10,7 @@ import { AccountModule } from './modules/account/account.module';
 import { DepositModule } from './modules/deposit/deposit.module';
 import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
 import { LoanModule } from './modules/loan/loan.module';
+import { TransferModule } from './modules/transfer/transfer.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoanModule } from './modules/loan/loan.module';
     DepositModule,
     WithdrawalModule,
     LoanModule,
+    TransferModule,
   ],
 })
 export class AppModule {}
