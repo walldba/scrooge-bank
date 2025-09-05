@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { DepositService } from './deposit.service';
 import { CreateDepositDto } from './dto/create-deposit.dto';
-import { DepositEntity } from './entities/deposit.entity';
+import { IDepositCreatedResponse } from './interfaces/deposit-response.interface';
 
 @Controller('deposit')
 export class DepositController {
@@ -10,7 +10,7 @@ export class DepositController {
   @Post('create')
   async createDeposit(
     @Body() createDepositDto: CreateDepositDto
-  ): Promise<DepositEntity> {
+  ): Promise<IDepositCreatedResponse> {
     return this.depositService.validateAndCreate(createDepositDto);
   }
 }

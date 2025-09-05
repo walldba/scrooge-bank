@@ -4,8 +4,9 @@ import { CreateDepositDto } from './dto/create-deposit.dto';
 import { AccountService } from '../account/account.service';
 import { BankService } from '../bank/bank.service';
 import { Transactional } from 'typeorm-transactional';
-import { AccountStatusEnum } from '../account/enums/account-status.enum';
 import { AccountEntity } from '../account/entities/account.entity';
+import { IDepositCreatedResponse } from './interfaces/deposit-response.interface';
+import { DepositResponseMapper } from './mappers/deposit-response.mapper';
 
 @Injectable()
 export class DepositService {
@@ -19,7 +20,9 @@ export class DepositService {
   ) {}
 
   @Transactional()
-  async validateAndCreate(createDepositDto: CreateDepositDto): Promise<any> {
+  async validateAndCreate(
+    createDepositDto: CreateDepositDto
+  ): Promise<IDepositCreatedResponse> {
     const { accountNumber, amount, userMail } = createDepositDto;
 
     const validatedAccount = await this.accountService.validateAccountOperation(
@@ -27,12 +30,13 @@ export class DepositService {
       userMail
     );
 
-    await Promise.all([
+    const [deposit] = await Promise.all([
+      this.createDeposit(validatedAccount, amount),
       this.accountService.incrementAccountBalance(validatedAccount, amount),
       this.bankService.handleDeposit(amount),
     ]);
 
-    return this.createDeposit(validatedAccount, amount);
+    return DepositResponseMapper.mapDepositCreatedResponse(deposit);
   }
 
   private createDeposit(account: AccountEntity, amount: number) {
