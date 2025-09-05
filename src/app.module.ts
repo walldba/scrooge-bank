@@ -9,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { AccountModule } from './modules/account/account.module';
 import { DepositModule } from './modules/deposit/deposit.module';
 import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
+import { LoanModule } from './modules/loan/loan.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
     AccountModule,
     DepositModule,
     WithdrawalModule,
+    LoanModule,
   ],
 })
 export class AppModule {}
