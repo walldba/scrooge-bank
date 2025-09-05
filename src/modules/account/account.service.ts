@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { AccountRepository } from './entities/account.repository';
 import { UserService } from '../user/user.service';
@@ -10,6 +11,7 @@ import { AccountEntity } from './entities/account.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountStatusEnum } from './enums/account-status.enum';
 import { Transactional } from 'typeorm-transactional';
+import { FindOneOptions, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class AccountService {
@@ -24,10 +26,12 @@ export class AccountService {
     return this.accountRepository.find({ relations: ['user'] });
   }
 
-  getAccountById(id: string): Promise<AccountEntity> {
+  async getAccount(
+    options: FindOneOptions<AccountEntity>
+  ): Promise<AccountEntity | null> {
     return this.accountRepository.findOne({
-      where: { id },
       relations: ['user'],
+      ...options,
     });
   }
 
@@ -85,5 +89,56 @@ export class AccountService {
     });
 
     return account;
+  }
+
+  async validateAccountOperation(
+    accountNumber: string,
+    userMail: string
+  ): Promise<AccountEntity> {
+    const account = await this.getAccount({
+      where: { accountNumber, status: AccountStatusEnum.OPEN },
+    });
+
+    if (!account) {
+      throw new NotFoundException(
+        `Account with account number ${accountNumber} not found.`
+      );
+    }
+
+    if (account.user.mail != userMail) {
+      throw new NotFoundException(
+        `You are trying to do an operation in an account that is not yours.`
+      );
+    }
+
+    return account;
+  }
+
+  async incrementAccountBalance(
+    account: AccountEntity,
+    amount: number
+  ): Promise<UpdateResult> {
+    return this.accountRepository.increment(
+      { id: account.id },
+      'balance',
+      amount
+    );
+  }
+
+  async decrementAccountBalance(
+    account: AccountEntity,
+    amount: number
+  ): Promise<UpdateResult> {
+    if (account.balance < amount) {
+      throw new BadRequestException(
+        `Insufficient funds in account ${account.accountNumber}.`
+      );
+    }
+
+    return this.accountRepository.decrement(
+      { id: account.id },
+      'balance',
+      amount
+    );
   }
 }

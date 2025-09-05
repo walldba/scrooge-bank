@@ -12,11 +12,6 @@ export class AccountController {
     return this.accountService.getAccounts();
   }
 
-  @Get(':id')
-  async getAccountById(@Param('id') id: string): Promise<AccountEntity> {
-    return this.accountService.getAccountById(id);
-  }
-
   @Post('create')
   async createAccount(
     @Body() createAccountDto: CreateAccountDto
