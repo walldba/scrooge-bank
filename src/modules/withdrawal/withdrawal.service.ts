@@ -5,6 +5,8 @@ import { AccountService } from '../account/account.service';
 import { BankService } from '../bank/bank.service';
 import { Transactional } from 'typeorm-transactional';
 import { AccountEntity } from '../account/entities/account.entity';
+import { IWithdrawalCreatedResponse } from './interfaces/withdrawal-response.interface';
+import { WithdrawalResponseMapper } from './mappers/withdrawal-response.mapper';
 
 @Injectable()
 export class WithdrawalService {
@@ -14,32 +16,35 @@ export class WithdrawalService {
     @Inject()
     private readonly bankService: BankService,
     @Inject()
-    private readonly depositRepository: WithdrawalRepository
+    private readonly withdrawalRepository: WithdrawalRepository
   ) {}
 
   @Transactional()
-  async validateAndCreate(createDepositDto: CreateWithdrawalDto): Promise<any> {
-    const { accountNumber, amount, userMail } = createDepositDto;
+  async validateAndCreate(
+    createWithdrawalDto: CreateWithdrawalDto
+  ): Promise<IWithdrawalCreatedResponse> {
+    const { accountNumber, amount, userMail } = createWithdrawalDto;
 
     const validatedAccount = await this.accountService.validateAccountOperation(
       accountNumber,
       userMail
     );
 
-    await Promise.all([
+    const [withdrawal] = await Promise.all([
+      this.createWithdrawal(validatedAccount, amount),
       this.accountService.decrementAccountBalance(validatedAccount, amount),
       this.bankService.handleWithdrawal(amount),
     ]);
 
-    return this.createWithdrawal(validatedAccount, amount);
+    return WithdrawalResponseMapper.mapWithdrawalCreatedResponse(withdrawal);
   }
 
   private createWithdrawal(account: AccountEntity, amount: number) {
-    const deposit = this.depositRepository.create({
+    const withdrawal = this.withdrawalRepository.create({
       amount,
       account: account,
     });
 
-    return this.depositRepository.save(deposit);
+    return this.withdrawalRepository.save(withdrawal);
   }
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { WithdrawalService } from './withdrawal.service';
 import { CreateWithdrawalDto } from './dto/create-withdrawal.dto';
-import { WithdrawalEntity } from './entities/withdrawal.entity';
+import { IWithdrawalCreatedResponse } from './interfaces/withdrawal-response.interface';
 
 @Controller('withdrawal')
 export class WithdrawalController {
@@ -10,7 +10,7 @@ export class WithdrawalController {
   @Post('create')
   async createWithdrawal(
     @Body() createWithdrawalDto: CreateWithdrawalDto
-  ): Promise<WithdrawalEntity> {
+  ): Promise<IWithdrawalCreatedResponse> {
     return this.withdrawalService.validateAndCreate(createWithdrawalDto);
   }
 }
