@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { faker } from '@faker-js/faker';
 import { AccountRepository } from './entities/account.repository';
 import { UserService } from '../user/user.service';
 import { AccountEntity } from './entities/account.entity';
@@ -12,7 +13,7 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { AccountStatusEnum } from './enums/account-status.enum';
 import { Transactional } from 'typeorm-transactional';
 import { FindOneOptions, UpdateResult } from 'typeorm';
-import { AccountResponseMappers } from './mappers/account-response.mapper';
+import { AccountResponseMapper } from './mappers/account-response.mapper';
 import { IAccountListResponse } from './interfaces/account-response.interface';
 
 @Injectable()
@@ -27,7 +28,7 @@ export class AccountService {
   async getAccounts(): Promise<IAccountListResponse[]> {
     const accounts = await this.accountRepository.find({ relations: ['user'] });
 
-    return accounts.map(AccountResponseMappers.mapAccountListResponse);
+    return accounts.map(AccountResponseMapper.mapAccountListResponse);
   }
 
   async getAccount(
@@ -49,7 +50,7 @@ export class AccountService {
 
     const account = await this.createAccount(createAccountDto, user.id);
 
-    return AccountResponseMappers.mapAccountListResponse(account);
+    return AccountResponseMapper.mapAccountListResponse(account);
   }
 
   private async validateAccountCreation(userId: string): Promise<void> {
@@ -72,7 +73,8 @@ export class AccountService {
     const account = this.accountRepository.create({
       user: { id: userId },
       balance: 0,
-      accountNumber: createAccountDto.accountNumber,
+      accountNumber:
+        createAccountDto.accountNumber || faker.finance.accountNumber(),
       status: AccountStatusEnum.OPEN,
     });
 

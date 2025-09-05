@@ -2,7 +2,7 @@ import { MoneyUtils } from '../../../common/utils/money.utils';
 import { AccountEntity } from '../entities/account.entity';
 import { IAccountListResponse } from '../interfaces/account-response.interface';
 
-export namespace AccountResponseMappers {
+export namespace AccountResponseMapper {
   export function mapAccountListResponse(
     account: AccountEntity
   ): IAccountListResponse {

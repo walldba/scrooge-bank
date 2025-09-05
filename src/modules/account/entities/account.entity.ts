@@ -4,6 +4,7 @@ import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UserEntity } from '../../user/entities/user.entity';
 import { DepositEntity } from '../../deposit/entities/deposit.entity';
 import { WithdrawalEntity } from '../../withdrawal/entities/withdrawal.entity';
+import { LoanEntity } from '../../loan/entities/loan.entity';
 
 @Entity('accounts')
 export class AccountEntity extends BaseEntity {
@@ -32,4 +33,7 @@ export class AccountEntity extends BaseEntity {
 
   @OneToMany(() => WithdrawalEntity, (withdrawal) => withdrawal.account)
   withdrawals: WithdrawalEntity[];
+
+  @OneToMany(() => LoanEntity, (loan) => loan.account)
+  loans: LoanEntity[];
 }
