@@ -1,0 +1,1 @@
+CREATE DATABASE "scrooge_bank_test";

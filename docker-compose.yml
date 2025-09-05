@@ -14,7 +14,7 @@ services:
       - DATABASE_PORT=5432
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=password
-      - DATABASE_NAME=scrooge-bank
+      - DATABASE_NAME=scrooge_bank
       - NODE_ENV=development
       - JWT_SECRET=your_jwt_secret
     restart: unless-stopped
@@ -31,14 +31,15 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=scrooge-bank
+      - POSTGRES_DB=scrooge_bank
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d scrooge-bank']
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d scrooge_bank']
       interval: 5s
       timeout: 5s
       retries: 20
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ./docker/db-init:/docker-entrypoint-initdb.d
     networks:
       - scrooge-network
 

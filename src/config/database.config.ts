@@ -7,7 +7,8 @@ export const AppDataSource = new DataSource({
   port: parseInt(process.env.DATABASE_PORT, 10) || 5433,
   username: process.env.DATABASE_USER || 'postgres',
   password: process.env.DATABASE_PASSWORD || 'password',
-  database: process.env.DATABASE_NAME || 'scrooge-bank',
+  database:
+    process.env.NODE_ENV === 'test' ? 'scrooge_bank_test' : 'scrooge_bank',
   entities: [join(__dirname, '..', '**', '*.entity.{js,ts}')],
   migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
   synchronize: process.env.NODE_ENV === 'development',
