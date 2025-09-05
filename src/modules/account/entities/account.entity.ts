@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UserEntity } from '../../user/entities/user.entity';
@@ -15,10 +15,13 @@ export class AccountEntity extends BaseEntity {
   })
   status: AccountStatusEnum;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ name: 'account_number', type: 'varchar', unique: true })
+  accountNumber: string;
+
+  @Column({ name: 'closed_at', type: 'timestamp', nullable: true })
   closedAt: Date | null;
 
-  @OneToOne(() => UserEntity, (user) => user.account)
+  @ManyToOne(() => UserEntity, (user) => user.accounts)
   @JoinColumn()
   user: UserEntity;
 }
