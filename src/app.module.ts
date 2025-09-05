@@ -5,6 +5,10 @@ import { AppDataSource } from './config/database.config';
 import { YmlConfig } from './config/yml.config.loader';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { BankModule } from './modules/bank/bank.module';
+import { UserModule } from './modules/user/user.module';
+import { AccountModule } from './modules/account/account.module';
+import { DepositModule } from './modules/deposit/deposit.module';
+import { WithdrawalModule } from './modules/withdrawal/withdrawal.module';
 
 @Module({
   imports: [
@@ -23,6 +27,10 @@ import { BankModule } from './modules/bank/bank.module';
       useFactory: () => ({}),
     }),
     BankModule,
+    UserModule,
+    AccountModule,
+    DepositModule,
+    WithdrawalModule,
   ],
 })
 export class AppModule {}
