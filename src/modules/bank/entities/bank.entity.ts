@@ -1,7 +1,7 @@
 import { Entity, Column } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 
-@Entity('bank')
+@Entity('banks')
 export class BankEntity extends BaseEntity {
   @Column({
     type: 'bigint',
