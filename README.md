@@ -26,7 +26,7 @@ This project, named "Scrooge Bank", is a backend application developed as a code
     ```
 2.  **Start Docker Services:** Use Docker Compose to build and run the PostgreSQL database and the NestJS application. This command will also set up the necessary databases (`scrooge-bank` and `scrooge-bank-test`).
     ```bash
-    docker-compose up --build -d
+    make up
     ```
 3.  **Access API Documentation:** Once the application is running, the API documentation (Swagger UI) will be available at:
     `http://localhost:3000/api/docs`
