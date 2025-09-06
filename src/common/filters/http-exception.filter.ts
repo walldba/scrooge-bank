@@ -41,7 +41,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
           (Array.isArray(errorObj.message) ? errorObj.message : undefined);
       }
 
-      // Map HTTP status codes to error codes
       switch (status) {
         case HttpStatus.BAD_REQUEST:
           errorCode = 'BAD_REQUEST';
@@ -65,7 +64,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
           errorCode = 'HTTP_ERROR';
       }
     } else {
-      // Handle non-HTTP exceptions
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       errorCode = 'INTERNAL_SERVER_ERROR';
       message = 'Internal server error';

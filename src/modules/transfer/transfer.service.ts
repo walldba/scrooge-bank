@@ -67,8 +67,7 @@ export class TransferService {
       status: TransferStatusEnum.COMPLETED,
     });
 
-    await this.transferRepository.save(transfer);
-    return transfer;
+    return await this.transferRepository.save(transfer);
   }
 
   private validateAccountsToTransfer(

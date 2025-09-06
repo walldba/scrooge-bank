@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
     process.env.NODE_ENV === 'test' ? 'scrooge_bank_test' : 'scrooge_bank',
   entities: [join(__dirname, '..', '**', '*.entity.{js,ts}')],
   migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
-  synchronize: process.env.NODE_ENV === 'development',
+  synchronize: true,
   autoLoadEntities: true,
   migrationsRun: process.env.NODE_ENV === 'production',
   logging: false,

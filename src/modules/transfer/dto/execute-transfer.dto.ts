@@ -21,7 +21,7 @@ export class ExecuteTransferDto {
 
   @ApiProperty({
     description: 'The amount to transfer in cents. Must be a positive integer.',
-    example: 500000, // 5,000 USD
+    example: 500000,
     minimum: 1,
   })
   @IsNumber()

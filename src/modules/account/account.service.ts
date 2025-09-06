@@ -5,7 +5,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { faker } from '@faker-js/faker';
 import { AccountRepository } from './entities/account.repository';
 import { UserService } from '../user/user.service';
 import { AccountEntity } from './entities/account.entity';
@@ -82,8 +81,7 @@ export class AccountService {
     const account = this.accountRepository.create({
       user: { id: userId },
       balance: 0,
-      accountNumber:
-        createAccountDto.accountNumber || faker.finance.accountNumber(),
+      accountNumber: createAccountDto.accountNumber,
       status: AccountStatusEnum.OPEN,
     });
 
