@@ -41,7 +41,6 @@ async function bootstrap() {
     .setTitle('Scrooge Bank API')
     .setDescription('Scrooge Bank API - SFox Code Challenge')
     .setVersion('1.0')
-    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
